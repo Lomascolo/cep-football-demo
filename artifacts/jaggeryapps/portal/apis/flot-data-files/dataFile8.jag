@@ -1,0 +1,81 @@
+<%
+
+function getRandomData() {
+
+	var playersMap = [[0, "Nick Gertje","A"],[1, "Dennis Dotterweich","A"],[2, "Niklas Waelzlein","A"],[3, "Wili Sommer","A"],
+	                  [4, "Philipp Harlass","A"],[5, "Roman Hartleb","A"],[6, "Erik Engelhardt","A"],[7, "Sandro Schneider","A"],
+	                  [8, "Leon Krapf","B"],[9, "Kevin Baer","B"],[10, "Luca Ziegler","B"],[11, "Ben Mueller","B"],
+	                  [12, "Vale Reitstetter","B"],[13, "Christopher Lee","B"],[14, "Leon Heinze","B"],[15, "Leo Langhans","B"],
+	                  [16, "",""]
+					]
+
+	var log = new Log();
+	
+	// calling the web service
+	var ws = require("ws");
+	var cep = new ws.WSRequest();
+	var options = new Array();
+	options.useSOAP = 1.2;
+	options.action = "urn:getPlayersPosition";
+	var payload =null;   
+	var result;
+
+	try {
+		cep.open(options,"http://localhost:9763/services/GameVisualizationService", false);
+		cep.send(payload);
+		result = cep;
+	} catch (e) {
+		log.error("couldnt connect to ws");
+		return e.toString();
+	}
+
+	var getPlayersPositionResponse = new XML(result.responseText);
+	var ns = "http://service.axis2.wso2.com";
+
+	var output = [];
+	var ts; var x; var y; var z;
+	
+	for (var i = 0; i <= 15; i++) {		//17, including shotOnGoal event-updates. 
+		ts = getPlayersPositionResponse.*::["return"][i].*::array[0].text();  //we don't need a ts for the time-being.
+		x = getPlayersPositionResponse.*::["return"][i].*::array[1].text();
+		y = getPlayersPositionResponse.*::["return"][i].*::array[2].text();
+		z = getPlayersPositionResponse.*::["return"][i].*::array[3].text();
+		//log.info(x+" "+y+" "+z);
+		output.push([x,y,z]);
+	}
+	
+	var ball_ts; var ball_x; var ball_y;
+	ball_ts = getPlayersPositionResponse.*::["return"][16].*::array[0].text();  //sending ts to js-file for goal detection
+	ball_x = getPlayersPositionResponse.*::["return"][16].*::array[1].text();
+	ball_y = getPlayersPositionResponse.*::["return"][16].*::array[2].text();
+	output.push([ball_x,ball_y,ball_ts]);
+	
+	
+	var clientMayRead; var ts_shot_on_goal; var pid_shot_on_goal;
+	clientMayRead = getPlayersPositionResponse.*::["return"][17].*::array[1].text();
+	ts_shot_on_goal = getPlayersPositionResponse.*::["return"][17].*::array[2].text();
+	pid_shot_on_goal = getPlayersPositionResponse.*::["return"][17].*::array[3].text();
+	output.push([clientMayRead,ts_shot_on_goal,pid_shot_on_goal]);
+	
+	//for displaying ball speed vector
+	var vx; var vy; 
+	vx = getPlayersPositionResponse.*::["return"][18].*::array[0].text();
+	vy = getPlayersPositionResponse.*::["return"][18].*::array[1].text();
+	output.push([vx,vy,0]);
+	
+	//offside
+	var clientMayRead2; var offsider_from; var offsider_to;
+	clientMayRead2 = getPlayersPositionResponse.*::["return"][19].*::array[1].text();
+	offsider_from = getPlayersPositionResponse.*::["return"][19].*::array[2].text();
+	offsider_to = getPlayersPositionResponse.*::["return"][19].*::array[3].text();
+	output.push([clientMayRead2,offsider_from,offsider_to]);
+	
+	//log.info("-----------------------------------------");
+	
+	return output;
+
+
+}
+print(getRandomData());
+
+%>

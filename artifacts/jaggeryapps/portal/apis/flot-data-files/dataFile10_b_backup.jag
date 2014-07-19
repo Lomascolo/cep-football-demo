@@ -1,0 +1,86 @@
+<%
+
+function getRandomData() {
+	
+	var log = new Log(); 
+	
+	// calling the web service
+	var ws = require("ws");
+	var cep = new ws.WSRequest();
+	var options = new Array();
+	options.useSOAP = 1.2;
+	options.action = "urn:getShotsOnGoalPercentageNew";
+	var payload =null;   
+	var result;
+	var data = [];
+	var obj = {};
+
+	try {
+		cep.open(options,"http://localhost:9763/services/UC2Service", false);
+		cep.send(payload);
+		result = cep;
+	} catch (e) {
+		log.error("something went wrong with the ws");
+		return e.toString();
+	}
+
+	var getTeamsPossessionResponse = new XML(result.responseText);
+	//log.info(getTeamsPossessionResponse);
+	var ns = "http://service.axis2.wso2.com";
+	
+	var sog_player8 = getTeamsPossessionResponse.*::["return"][8].text();
+	
+	if (sog_player8 == '-1'){
+		obj["random1"] = {"label":"no-data","data":0};
+	}
+	else{
+		var sog_player8 = getTeamsPossessionResponse.*::["return"][8].text();
+		var sog_player9 = getTeamsPossessionResponse.*::["return"][9].text();
+		var sog_player10 = getTeamsPossessionResponse.*::["return"][10].text();
+		var sog_player11 = getTeamsPossessionResponse.*::["return"][11].text();
+		var sog_player12 = getTeamsPossessionResponse.*::["return"][12].text();
+		var sog_player13 = getTeamsPossessionResponse.*::["return"][13].text();
+		var sog_player14 = getTeamsPossessionResponse.*::["return"][14].text();
+		var sog_player15 = getTeamsPossessionResponse.*::["return"][15].text();
+		
+		obj["random8"] = {"label":"","data":sog_player8, color: "#3B0B17"};
+		obj["random9"] = {"label":"","data":sog_player9, color: "#610B5E"};
+		obj["random10"] = {"label":"","data":sog_player10, color: "#8A0829"};
+		obj["random11"] = {"label":"","data":sog_player11, color: "#B404AE"};
+		obj["random12"] = {"label":"","data":sog_player12, color: "#DF013A"};
+		obj["random13"] = {"label":"","data":sog_player13, color: "#FF00FF"};
+		obj["random14"] = {"label":"","data":sog_player14, color: "#FE2E64"};
+		obj["random15"] = {"label":"","data":sog_player15, color: "#F7819F"};			
+	}
+	
+/*	var time_A = getTeamsPossessionResponse.*::["return"][0].*::array[1].text();
+	var time_percent_A = getTeamsPossessionResponse.*::["return"][0].*::array[2].text();
+	
+	var ts_B = getTeamsPossessionResponse.*::["return"][1].*::array[0].text();
+	var time_B = getTeamsPossessionResponse.*::["return"][1].*::array[1].text();
+	var time_percent_B = 100 - time_percent_A;
+	
+
+
+	if(time_percent_A == '0.0' | time_percent_A == '100'){
+		obj["random1"] = {"label":"","data":0};
+	}
+	else{
+		obj["random1"] = {"label":"Team A","data":time_percent_A, color: "orange"};
+		obj["random2"] = {"label":"Team B","data":time_percent_B, color: "#E10000"};
+	}
+	
+	//temp block; delete later
+	var data = [];
+	var obj = {};
+	obj["random1"] = {"label":"Team A","data":10, color: "orange"};
+	obj["random2"] = {"label":"Team B","data":90, color: "#E10000"};
+	//end of temp block
+*/	
+	data.push(obj);
+    return data;
+
+}
+print(getRandomData());
+
+%>

@@ -1,0 +1,18 @@
+<service>
+	<description>
+		This Web Service is hosted to serve Usecase-2
+	</description>
+	<parameter name="ServiceClass">com.wso2.axis2.service.UC2Service</parameter>
+	<operation name="notifyPlayerPossessionEvent">
+		<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" />
+	</operation>
+	<operation name="notifyTeamPossessionEvent">
+		<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" />
+	</operation>
+	<operation name="getPlayersPossession">
+		<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" />
+	</operation>
+	<operation name="getTeamsPossession">
+		<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" />
+	</operation>
+</service>

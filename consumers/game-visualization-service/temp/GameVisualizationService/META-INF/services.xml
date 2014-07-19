@@ -1,0 +1,12 @@
+<service>
+	<description>
+		This Web Service is hosted to serve Game Visualization data
+	</description>
+	<parameter name="ServiceClass">com.wso2.axis2.service.GameVisualizationService</parameter>
+	<operation name="notifyPlayersPositionEvent">
+		<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" />
+	</operation>
+	<operation name="getPlayersPosition">
+		<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" />
+	</operation>
+</service>

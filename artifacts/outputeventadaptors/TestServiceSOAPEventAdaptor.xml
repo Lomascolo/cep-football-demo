@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<outputEventAdaptor name="TestServiceSOAPEventAdaptor"
+  statistics="disable" trace="disable" type="soap" xmlns="http://wso2.org/carbon/eventadaptormanager"/>

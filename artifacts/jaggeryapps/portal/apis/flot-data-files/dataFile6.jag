@@ -1,0 +1,52 @@
+<%
+
+function getRandomData() {
+	
+	var log = new Log(); 
+	
+	// calling the web service
+	var ws = require("ws");
+	var cep = new ws.WSRequest();
+	var options = new Array();
+	options.useSOAP = 1.2;
+	options.action = "urn:getTeamsPossession";
+	var payload =null;   
+	var result;
+
+	try {
+		cep.open(options,"http://localhost:9763/services/UC2Service", false);
+		cep.send(payload);
+		result = cep;
+	} catch (e) {
+		log.error("something's wrong with the ws");
+		return e.toString();
+	}
+
+	var getTeamsPossessionResponse = new XML(result.responseText);
+	var ns = "http://service.axis2.wso2.com";
+	
+	var ts_A = getTeamsPossessionResponse.*::["return"][0].*::array[0].text();
+	var time_A = getTeamsPossessionResponse.*::["return"][0].*::array[1].text();
+	var time_percent_A = getTeamsPossessionResponse.*::["return"][0].*::array[2].text();
+	
+	var ts_B = getTeamsPossessionResponse.*::["return"][1].*::array[0].text();
+	var time_B = getTeamsPossessionResponse.*::["return"][1].*::array[1].text();
+	var time_percent_B = 100 - time_percent_A;
+	
+	var data = [];
+	var obj = {};
+
+	if(time_percent_A == '0.0' | time_percent_A == '100'){
+		obj["random1"] = {"label":"","data":0};
+	}
+	else{
+		obj["random1"] = {"label":"Team A","data":time_percent_A, color: "orange"};
+		obj["random2"] = {"label":"Team B","data":time_percent_B, color: "#E10000"};
+	}
+	data.push(obj);
+    return data;
+
+}
+print(getRandomData());
+
+%>

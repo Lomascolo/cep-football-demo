@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eventFormatter
+  name="FullFinalTeamBallPossessionStreamEventFormatterHTTP"
+  statistics="disable" trace="disable" xmlns="http://wso2.org/carbon/eventformatter">
+  <from streamName="FullFinalTeamBallPossessionStream" version="1.0.0"/>
+  <mapping customMapping="enable" type="xml">
+    <inline>
+      <soapenv:Envelope xmlns:ser="http://service.axis2.wso2.com" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+        <soapenv:Header/>
+        <soapenv:Body>
+          <ser:submitOrder>
+            <!--Optional:-->
+            <ser:orderId>{{team_id}}</ser:orderId>
+          </ser:submitOrder>
+        </soapenv:Body>
+      </soapenv:Envelope>
+    </inline>
+  </mapping>
+  <to eventAdaptorName="TestServiceHTTPEventAdaptor" eventAdaptorType="http">
+    <property name="http.username">admin</property>
+    <property name="http.password">admin</property>
+    <property name="http.headers">SOAPAction: &quot;urn:submitOrder&quot;</property>
+    <property name="http.url">http://10.100.5.59:9763/services/TestService</property>
+  </to>
+</eventFormatter>

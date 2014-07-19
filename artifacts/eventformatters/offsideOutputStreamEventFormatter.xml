@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eventFormatter name="offsideOutputStreamEventFormatter"
+  statistics="disable" trace="disable" xmlns="http://wso2.org/carbon/eventformatter">
+  <from streamName="offsideOutputStream" version="1.0.0"/>
+  <mapping customMapping="enable" type="text">
+    <inline>event_type:{{event_type}} , pid:{{pid}} , y:{{y}} , ts:{{ts}} , passee:{{passee}} </inline>
+  </mapping>
+  <to eventAdaptorName="TestLogger" eventAdaptorType="logger">
+    <property name="uniqueId">offsideOutputStreamEventFormatter</property>
+  </to>
+</eventFormatter>

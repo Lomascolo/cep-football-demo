@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eventFormatter name="chartShotOnGoalCountStreamEventFormatter"
+  statistics="disable" trace="disable" xmlns="http://wso2.org/carbon/eventformatter">
+  <from streamName="chartShotOnGoalCountStream" version="1.0.0"/>
+  <mapping customMapping="enable" type="xml">
+    <inline>
+      <ser:notifyShotOnGoalEvent xmlns:ser="http://service.axis2.wso2.com">
+        <ser:event>{{chart_tuple}}</ser:event>
+      </ser:notifyShotOnGoalEvent>
+    </inline>
+  </mapping>
+  <to eventAdaptorName="TestServiceSOAPEventAdaptor" eventAdaptorType="soap">
+    <property name="username">admin</property>
+    <property name="password">admin</property>
+    <property name="url">http://localhost:9763/services/UC2Service</property>
+  </to>
+</eventFormatter>

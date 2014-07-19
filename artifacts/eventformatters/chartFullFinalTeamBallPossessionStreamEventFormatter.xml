@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eventFormatter
+  name="chartFullFinalTeamBallPossessionStreamEventFormatter"
+  statistics="disable" trace="disable" xmlns="http://wso2.org/carbon/eventformatter">
+  <from streamName="chartFullFinalTeamBallPossessionStream" version="1.0.0"/>
+  <mapping customMapping="enable" type="xml">
+    <inline>
+      <ser:notifyTeamPossessionEvent xmlns:ser="http://service.axis2.wso2.com">
+        <ser:event>{{chart_teamposs_tuple}}</ser:event>
+      </ser:notifyTeamPossessionEvent>
+    </inline>
+  </mapping>
+  <to eventAdaptorName="TestServiceSOAPEventAdaptor" eventAdaptorType="soap">
+    <property name="username">admin</property>
+    <property name="password">admin</property>
+    <property name="url">http://localhost:9763/services/UC2Service</property>
+  </to>
+</eventFormatter>

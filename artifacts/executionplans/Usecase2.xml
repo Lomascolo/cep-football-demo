@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executionPlan name="Usecase2" statistics="disable" trace="disable" xmlns="http://wso2.org/carbon/eventprocessor">
+  <description/>
+  <siddhiConfiguration>
+    <property name="siddhi.enable.distributed.processing">false</property>
+    <property name="siddhi.persistence.snapshot.time.interval.minutes">0</property>
+  </siddhiConfiguration>
+  <importedStreams>
+    <stream as="sensorStream" name="sensorStream" version="1.0.0"/>
+  </importedStreams>
+  <queryExpressions><![CDATA[from  sensorStream [ sid == '4' or sid == '8' or sid == '10' or sid =='12'] 
+	select sid, ts, x, y, z, a, v, ax, ay, az, vx, vy, vz, tsr, 'ball' as id  
+	insert into ballStream;
+
+from  ballStream [ x < 52483 and x > 0 and y > -33960 and y < 33965] 
+	insert into ballInStream;
+
+//--IN addPlayerStreams
+
+from  sensorStream [ sid == '13' or sid == '14' or sid == '97' or sid == '98'] 
+                    select 'Nick Gertje' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms  
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '47' or sid == '16'] 
+                    select 'Dennis Dotterweich' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '49' or sid == '88'] 
+                    select 'Niklas Waelzlein' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '19' or sid == '52'] 
+                    select 'Wili Sommer' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '53' or sid == '54'] 
+                    select 'Philipp Harlass' as pid , 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '23' or sid == '24'] 
+                    select 'Roman Hartleb' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '57' or sid == '58'] 
+                    select 'Erik Engelhardt' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '59' or sid == '28'] 
+                    select 'Sandro Schneider' as pid ,'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '61' or sid == '62' or sid == '99' or sid == '100'] 
+                    select 'Leon Krapf' as pid,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '63' or sid == '64'] 
+                    select 'Kevin Baer' as pid,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '65' or sid == '66'] 
+                    select 'Luca Ziegler' as pid,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '67' or sid == '68'] 
+                    select 'Ben Mueller' as pid ,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '69' or sid == '38'] 
+                    select 'Vale Reitstetter' as pid,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '71' or sid == '40'] 
+                    select 'Christopher Lee' as pid ,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '73' or sid == '74'] 
+                    select 'Leon Heinze' as pid ,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '75' or sid == '44'] 
+                    select 'Leo Langhans' as pid ,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+//--IN addHitStream
+
+from  ballInStream#window.length(1) as b join sensorIdentifiedStream#window.length(1)  as p unidirectional 
+	on debs:getDistance(b.x,b.y,b.z, p.x, p.y, p.z) < 1000 and b.a > 55 
+	select p.sid, p.ts, p.x, p.y, p.z, p.v, p.vx ,p.vy, p.vz, p.a, p.ax, p.ay, p.az, p.pid,p.tid, b.sid as ball_sid  
+	insert into hitStream;
+	
+//--for success passes
+from  a1 = hitStream, a = hitStream[a.pid != a1.pid], b = hitStream[a.pid == b.pid]*, c = hitStream[a.tid == c.tid and a.pid != c.pid]
+	select a.sid, a.ball_sid, a.ts, a.pid, a.tid 
+	insert into preSuccessPassesStream;
+
+from preSuccessPassesStream
+	select sid, ball_sid, 0 as ts, pid, count(pid) as cnt, tid
+	group by pid
+	insert into successPassesStream;
+
+//--for failed passes	
+from  a1 = hitStream, a = hitStream[a.pid != a1.pid], b = hitStream[a.pid == b.pid]*, c = hitStream[a.tid != c.tid]
+	select a.sid, a.ball_sid, a.ts, a.pid, a.tid
+	insert into preFailedPassesStream;
+
+from preFailedPassesStream
+	select sid, ball_sid, 0 as ts, pid, count(pid) as cnt, tid
+	group by pid
+	insert into failedPassesStream;		
+	
+//--two event streams for the chart
+
+from successPassesStream
+	select concat(pid,",",ts,",",cnt) as chart_tuple
+	insert into chartSuccessPassesStream;	
+
+from failedPassesStream
+	select concat(pid,",",ts,",",cnt) as chart_tuple
+	insert into chartFailedPassesStream;		
+
+//--BACK IN configureUsecase2
+
+from  hitStream 
+	select sid, ball_sid, ts, pid, tid, count(pid) as cnt 
+	insert into hitCountStream;
+
+//--IN addBallLeavingStream
+
+from b1 = ballStream[ x < 52483 and x > 0 and y > -33960 and y < 33965], b2 = ballStream[ b1.sid==sid and (x > 52483 or x < 0 or y < -33960 or y > 33965)] 
+	select b2.sid, b2.ts, b2.x, b2.y, b2.z, b2.a, b2.id  
+	insert into ballLeavingStream;
+
+//--BACK IN configureUsecase2
+
+from  hitCountStream#window.length(1) as h join ballLeavingStream#window.length(1)  as b unidirectional 
+	select b.sid, b.ts, b.x, b.y, b.z, b.a, b.id, h.cnt 
+	insert into ballLeavingHitStream;
+
+from old = hitCountStream, b = hitCountStream[old.pid != pid ], n=hitCountStream[b.pid == pid]*, e1 = hitCountStream[b.pid != pid ] or e2=ballLeavingHitStream 
+	select b.pid as player_id, b.tid as team_id, b.ts as start_ts,  coalesce(n[last].ts ,b.ts) as end_ts, coalesce(n[last].cnt ,b.cnt) as counter1, b.cnt as counter2  
+	insert into PreBallPossessionStream;
+
+from  PreBallPossessionStream 
+	select player_id, end_ts as ts, end_ts - start_ts as time, counter1- counter2  as hitCount 
+	insert into BallPossessionStream;
+	
+//--for the chart
+
+from BallPossessionStream
+	select player_id
+	insert into chartBallPossessionStream;	
+
+from  PreBallPossessionStream[team_id=='A'] 
+                select team_id, end_ts as ts, end_ts - start_ts as time , end_ts - start_ts as timeA, 0l as  timeB 
+                insert into PreTeamBallPossessionStream;
+
+from  PreBallPossessionStream[team_id=='B'] 
+                select team_id, end_ts as ts, end_ts - start_ts as time , 0l as timeA , end_ts - start_ts as timeB 
+                insert into PreTeamBallPossessionStream;
+
+from  PreTeamBallPossessionStream 
+                select team_id, ts, time ,sum (timeA) as totalTimeA, sum (timeB) as totalTimeB, sum(time) as  allTotalTime, 'F' as type 
+                insert into TeamBallPossessionStream;
+
+from  PreTeamBallPossessionStream#window.time(1 min) 
+                select team_id, ts, time ,sum (timeA) as totalTimeA, sum (timeB) as totalTimeB, sum(time) as  allTotalTime, '1' as type 
+                insert into TeamBallPossessionStream;
+
+from  PreTeamBallPossessionStream#window.time(5 min) 
+                select team_id, ts, time ,sum (timeA) as totalTimeA, sum (timeB) as totalTimeB, sum(time) as  allTotalTime, '5' as type 
+                insert into TeamBallPossessionStream;
+
+from  PreTeamBallPossessionStream#window.time(20 min) 
+                select team_id, ts, time ,sum (timeA) as totalTimeA, sum (timeB) as totalTimeB, sum(time) as  allTotalTime, '20' as type 
+                insert into TeamBallPossessionStream;
+
+from  TeamBallPossessionStream [team_id=='A'] 
+                select team_id, ts, time ,  totalTimeA*100.0/allTotalTime as time_percent , type 
+                insert into FinalTeamBallPossessionStream;
+
+from  TeamBallPossessionStream [team_id=='B'] 
+                select team_id, ts, time ,  totalTimeB*100.0/allTotalTime as time_percent, type 
+                insert into FinalTeamBallPossessionStream;
+
+from  FinalTeamBallPossessionStream[type=='F'] 
+                select team_id, ts, time , time_percent 
+                group by team_id 
+                output last every 20 milliseconds 
+                insert into FullFinalTeamBallPossessionStream;
+
+from  FinalTeamBallPossessionStream[type=='1'] 
+                select team_id, ts, time , time_percent 
+                group by team_id 
+                output last every 20 milliseconds 
+                insert into OneFinalTeamBallPossessionStream;
+
+from  FinalTeamBallPossessionStream[type=='5'] 
+                select team_id, ts, time , time_percent 
+                group by team_id 
+                output last every 20 milliseconds 
+                insert into FiveFinalTeamBallPossessionStream;
+
+from  FinalTeamBallPossessionStream[type=='20'] 
+                select team_id, ts, time , time_percent 
+                group by team_id 
+                output last every 20 milliseconds 
+                insert into TwentyFinalTeamBallPossessionStream;
+
+from  BallPossessionStream 
+                group by player_id 
+                output last every 20 milliseconds 
+                insert into DelayedBallPossessionStream;
+				
+from DelayedBallPossessionStream
+	select concat(player_id,",",ts,",", time,",",hitCount) as chart_tuple
+	insert into chartDelayedBallPossessionStream;
+	
+from FullFinalTeamBallPossessionStream
+	select concat(team_id,",",ts,",",time,",",time_percent) as chart_teamposs_tuple
+	insert into chartFullFinalTeamBallPossessionStream;]]></queryExpressions>
+  <exportedStreams>
+    <stream name="chartFullFinalTeamBallPossessionStream"
+      valueOf="chartFullFinalTeamBallPossessionStream" version="1.0.0"/>
+    <stream name="chartDelayedBallPossessionStream"
+      valueOf="chartDelayedBallPossessionStream" version="1.0.0"/>
+    <stream name="chartSuccessPassesStream"
+      valueOf="chartSuccessPassesStream" version="1.0.0"/>
+    <stream name="chartFailedPassesStream"
+      valueOf="chartFailedPassesStream" version="1.0.0"/>
+    <stream name="chartBallPossessionStream"
+      valueOf="chartBallPossessionStream" version="1.0.0"/>
+  </exportedStreams>
+</executionPlan>

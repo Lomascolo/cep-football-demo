@@ -1,0 +1,59 @@
+var options = {
+    legend: {
+        show: true
+    },
+    series: {
+        lines: {
+            show: true
+        },
+        points: {
+            show: true
+        },
+	colors: {
+	 ['#5F4C0B', '#5E610B', '#B18904', '#AEB404', '#FFBF00', '#FFFF00', '#F7D358','#F4FA58', '#3B0B17', '#610B5E', '#8A0829', '#B404AE', '#DF013A', '#FF00FF', '#FE2E64', '#F7819F']
+	}
+    },
+    grid: {
+        hoverable: true,
+        clickable: true
+    },
+    yaxis: {
+        show: true
+    },
+    xaxis: {
+        show: true
+    },
+    zoom: {
+        interactive: true
+    },
+    selection: {
+        mode: "xy"
+    }
+};
+
+
+var overviewOptions = {
+    legend: {
+        show: false
+    },
+    series: {
+        lines: {
+            show: true,
+            lineWidth: 1
+        },
+        shadowSize: 0
+    },
+    xaxis: {
+        show: true,
+        ticks: 4
+    },
+    yaxis: {
+        ticks: 3
+    },
+    grid: {
+        color: "#999"
+    },
+    selection: {
+        mode: "xy"
+    }
+};

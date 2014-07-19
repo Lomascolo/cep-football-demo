@@ -1,0 +1,91 @@
+<%
+
+function getRandomData() {
+	
+	var log = new Log(); 
+	
+	// calling the web service
+	var ws = require("ws");
+	var cep = new ws.WSRequest();
+	var options = new Array();
+	options.useSOAP = 1.2;
+	options.action = "urn:getShotsOnGoalPercentageTopFive";
+	var payload =null;   
+	var result;
+	var data = [];
+	var obj = {};
+	var color_codes = ['#5F4C0B', '#5E610B', '#B18904', '#AEB404', '#FFBF00', '#FFFF00', '#F7D358','#F4FA58', '#3B0B17', '#610B5E', '#8A0829', '#B404AE', '#DF013A', '#FF00FF', '#FE2E64', '#F7819F'];
+
+	try {
+		cep.open(options,"http://localhost:9763/services/UC2Service", false);
+		cep.send(payload);
+		result = cep;
+	} catch (e) {
+		log.error("something went wrong with the ws");
+		return e.toString();
+	}
+
+	var getShotsOnGoalPercentageTopFiveResponse = new XML(result.responseText);
+	//log.info(getShotsOnGoalPercentageTopFiveResponse);
+	var ns = "http://service.axis2.wso2.com";
+	
+	var sog_player0 = getShotsOnGoalPercentageTopFiveResponse.*::["return"][0].*::array[0].text();
+	
+	if (sog_player0 == '-1'){
+		obj["random1"] = {"label":"no-data","data":0};
+	}
+	else{
+		var sog_player0 = getShotsOnGoalPercentageTopFiveResponse.*::["return"][0].*::array[1].text();
+		var sog_player1 = getShotsOnGoalPercentageTopFiveResponse.*::["return"][1].*::array[1].text();
+		var sog_player2 = getShotsOnGoalPercentageTopFiveResponse.*::["return"][2].*::array[1].text();
+		var sog_player3 = getShotsOnGoalPercentageTopFiveResponse.*::["return"][3].*::array[1].text();
+		var sog_player4 = getShotsOnGoalPercentageTopFiveResponse.*::["return"][4].*::array[1].text();
+		var sog_others  = getShotsOnGoalPercentageTopFiveResponse.*::["return"][5].*::array[1].text();
+		
+		var color0 = parseInt(getShotsOnGoalPercentageTopFiveResponse.*::["return"][0].*::array[0].text());
+		var color1 = parseInt(getShotsOnGoalPercentageTopFiveResponse.*::["return"][1].*::array[0].text());
+		var color2 = parseInt(getShotsOnGoalPercentageTopFiveResponse.*::["return"][2].*::array[0].text());
+		var color3 = parseInt(getShotsOnGoalPercentageTopFiveResponse.*::["return"][3].*::array[0].text());
+		var color4 = parseInt(getShotsOnGoalPercentageTopFiveResponse.*::["return"][4].*::array[0].text());
+	
+		var others = '#82FA58';
+		
+		obj["random0"] = {"label":"","data":sog_player0, color: color_codes[color0]};
+		obj["random1"] = {"label":"","data":sog_player1, color: color_codes[color1]};
+		obj["random2"] = {"label":"","data":sog_player2, color: color_codes[color2]};
+		obj["random3"] = {"label":"","data":sog_player3, color: color_codes[color3]};
+		obj["random4"] = {"label":"","data":sog_player4, color: color_codes[color4]};
+		obj["random5"] = {"label":"","data":sog_others, color: others};
+	}
+	
+/*	var time_A = getTeamsPossessionResponse.*::["return"][0].*::array[1].text();
+	var time_percent_A = getTeamsPossessionResponse.*::["return"][0].*::array[2].text();
+	
+	var ts_B = getTeamsPossessionResponse.*::["return"][1].*::array[0].text();
+	var time_B = getTeamsPossessionResponse.*::["return"][1].*::array[1].text();
+	var time_percent_B = 100 - time_percent_A;
+	
+
+
+	if(time_percent_A == '0.0' | time_percent_A == '100'){
+		obj["random1"] = {"label":"","data":0};
+	}
+	else{
+		obj["random1"] = {"label":"Team A","data":time_percent_A, color: "orange"};
+		obj["random2"] = {"label":"Team B","data":time_percent_B, color: "#E10000"};
+	}
+	
+	//temp block; delete later
+	var data = [];
+	var obj = {};
+	obj["random1"] = {"label":"Team A","data":10, color: "orange"};
+	obj["random2"] = {"label":"Team B","data":90, color: "#E10000"};
+	//end of temp block
+*/	
+	data.push(obj);
+    return data;
+
+}
+print(getRandomData());
+
+%>

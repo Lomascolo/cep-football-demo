@@ -1,0 +1,54 @@
+        .l-r-row{
+            margin-top:10px;
+        }
+        .l-r-container{
+
+        }
+        .l-r-text{
+            float: left;
+            width:36%;re
+            text-align: center;
+            font-size: 11px;
+            color:#444;
+        }
+        .l-wrap{
+            float:left;
+            width:31%;
+            background: #efefef;
+            border:solid 1px #ccc;
+        }
+        .r-wrap{
+            float:right;
+            width:31%;
+            background: #efefef;
+            border:solid 1px #ccc;
+        }
+        .l-trans{
+            float:right;
+            text-align: right;
+        }
+        .r-trans{
+            float: left;
+            text-align: left;
+        }
+        .l-trans,.r-trans{
+            width:50%;
+            background: transparent;
+            height: 4px;
+            padding: 5px;
+	    font-size: 10px;
+        }
+        .l-green{
+            float: right;
+        }
+        .r-green{
+            float: left;
+        }
+        .l-green,.r-green{
+            background: #009e00;
+            height: 4px;
+            color:#fff;
+            padding:5px;
+            text-align:left;
+	    font-size: 10px;
+        }

@@ -1,0 +1,115 @@
+<% 
+	var tsCount = 10;
+	var playersCount = 16;
+	
+	function invokeStockDataWs() {
+		
+		var log = new Log(); 
+		
+		var currTs = session.get("currTs");
+		if(currTs==null){
+			currTs = 0;
+		}
+
+		var timestampArr = session.get("timestampArr");
+		if(timestampArr ==null){
+			timestampArr = new Array(tsCount);
+			for (var i = 0; i < tsCount; i++) {
+				timestampArr[i] = new Array(playersCount);
+			}
+		}
+		
+		var plot = session.get("plot");
+		if(plot == null){
+			plot = new Array(tsCount);
+			for (var i = 0; i < tsCount; i++) {
+				plot[i] = new Array(playersCount);
+			}
+		}
+		
+		var series = new Array(playersCount);
+		for (var i = 0; i < playersCount; i++) {
+			series[i] = new Array(tsCount);
+		}
+		
+		// calling the web service
+		var ws = require("ws");
+		var cep = new ws.WSRequest();
+		var options = new Array();
+		options.useSOAP = 1.2;
+		options.action = "urn:getPlayerState";  
+		var payload =null;   
+		var result;
+		
+		try {
+			cep.open(options,"http://localhost:9763/services/UC1Service", false);
+			cep.send(payload);
+			result = cep;
+		} catch (e) {
+			log.error(e.toString());
+			return e.toString();
+		}
+		
+		var getStockQuoteResponse = new XML(result.responseText);
+		var ns = "http://service.axis2.wso2.com";
+		
+		for (var i = 0; i < playersCount; ++i) {
+			timestampArr[currTs][i] = getStockQuoteResponse.*::["return"].*::array[2*i+1].text();
+		}
+		
+		for (var i = 0; i < tsCount; ++i) {
+			for (var j = 0; j < playersCount; ++j) {
+			}
+		}
+		
+		//update the plot
+		for (var i = tsCount-1; i >= 0; --i) {
+			for (var j = 0; j < playersCount; ++j) {
+				plot[i][j] = timestampArr[getPrev(currTs,tsCount-1-i)][j];
+			}
+		}
+		
+		for (var i = 0; i < playersCount; ++i) {
+			for (var j = 0; j < tsCount; ++j) {
+				series[i].push([j,(plot[j][i])]);
+			}
+		}
+		
+		currTs = (currTs+1)%tsCount;
+		
+		session.put("currTs",currTs);
+		session.put("timestampArr",timestampArr);
+		session.put("plot",plot);
+		
+		return [
+			{
+				"series1":{label: "Nick Gertje", data: series[0]} , 
+				"series2":{label: "Dennis Dotterweich", data: series[1] },
+				"series15":{label: "Niklas Waelzlein", data: series[2] },
+				"series3":{label: "Wili Sommer", data: series[3] }
+			}
+		];		
+		
+//		"series4":{label: "Philipp Harlass", data: series[4] }
+//		"series5":{label: "Roman Hartleb", data: series[5] },
+//		"series6":{label: "Erik Engelhardt", data: series[6] },
+//		"series7":{label: "Sandro Schneider", data: series[7] },
+//		"series8":{label: "Leon Krapf", data: series[8] },
+//		"series9":{label: "Kevin Baer", data: series[9] },
+//		"series10":{label: "Luca Ziegler", data: series[10] },
+//		"series11":{label: "Ben Mueller", data: series[11] },
+//		"series12":{label: "Vale Reitstetter", data: series[12] },
+//		"series13":{label: "Christopher Lee", data: series[13] },
+//		"series14":{label: "Leon Heinze", data: series[14] },
+//		"series16":{label: "Leo Langhans", data: series[15] }
+	}
+	
+	function getPrev(currentTs, i){
+		if(currentTs-i<0)
+			return currentTs-i+tsCount;
+		else
+			return currentTs-i;
+	}
+	
+	print(invokeStockDataWs()); 
+%>

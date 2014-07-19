@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executionPlan name="Usecase1" statistics="disable" trace="disable" xmlns="http://wso2.org/carbon/eventprocessor">
+  <description/>
+  <siddhiConfiguration>
+    <property name="siddhi.enable.distributed.processing">false</property>
+    <property name="siddhi.persistence.snapshot.time.interval.minutes">0</property>
+  </siddhiConfiguration>
+  <importedStreams>
+    <stream as="sensorStream" name="sensorStream" version="1.0.0"/>
+  </importedStreams>
+  <queryExpressions><![CDATA[from  sensorStream [ sid == '13' or sid == '14' or sid == '97' or sid == '98'] 
+                    select 'Nick Gertje' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+from  sensorStream [ sid == '47' or sid == '16'] 
+                    select 'Dennis Dotterweich' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+from  sensorStream [ sid == '49' or sid == '88'] 
+                    select 'Niklas Waelzlein' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+from  sensorStream [ sid == '19' or sid == '52'] 
+                    select 'Wili Sommer'  as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+from  sensorStream [ sid == '53' or sid == '54'] 
+                    select 'Philipp Harlass' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+					
+from  sensorStream [ sid == '23' or sid == '24'] 
+                    select 'Roman Hartleb' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+from  sensorStream [ sid == '57' or sid == '58']
+                    select 'Erik Engelhardt' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+from  sensorStream [ sid == '59' or sid == '28'] 
+                    select 'Sandro Schneider' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+					
+					from  sensorStream [ sid == '61' or sid == '62' or sid == '99' or sid == '100'] 
+                    select 'Leon Krapf'  as pid, 'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+					from  sensorStream [ sid == '63' or sid == '64'] 
+                    select 'Kevin Baer'  as pid, 'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+					from  sensorStream [ sid == '65' or sid == '66'] 
+                    select 'Luca Ziegler' as pid, 'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+					from  sensorStream [ sid == '67' or sid == '68'] 
+                    select 'Ben Mueller' as pid, 'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+					from  sensorStream [ sid == '69' or sid == '38'] 
+                    select 'Vale Reitstetter' as pid, 'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+					from  sensorStream [ sid == '71' or sid == '40'] 
+                    select 'Christopher Lee' as pid, 'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+					from  sensorStream [ sid == '73' or sid == '74'] 
+                    select 'Leon Heinze' as pid, 'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+										
+					from  sensorStream [ sid == '75' or sid == '44'] 
+                    select 'Leo Langhans' as pid, 'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+
+from sensorIdentifiedStream[sid != '97' and sid != '98' and sid != '99' and sid != '100'] 
+                select * insert into filteredSensorIdentifiedStream;
+
+define partition initialPartition by filteredSensorIdentifiedStream.pid;
+
+from filteredSensorIdentifiedStream#window.debs:normalizeSpeed('v','sid') 
+	select pid,ts,x,y,z,v 
+	insert into playerIdentifiedStream for expired-events partition by initialPartition;
+
+define partition player by playerIdentifiedStream.pid;
+
+                from s = playerIdentifiedStream 
+                        [v >= 1], t = 
+                        playerIdentifiedStream 
+                        [v < 1]+, e =  
+                        playerIdentifiedStream 
+                        [v >= 1]  
+                        select "ON" as getAvgsForState, t[0].ts as ts_start, t[last].ts as ts_stop, s.pid as player_id, "stop" as intensity,
+                        t[last].v as speed, debs:calculateDistance(t[0].x,t[0].y,t[0].z,t[last].x,t[last].y,t[last].z) as distance, (t[last].ts - t[0].ts)/1000000000.0 as unitPeriod 
+			insert into runDataStream partition by player; 
+
+                from s = 
+                        playerIdentifiedStream 
+                        [v < 1 or v >= 11], t =  
+                        playerIdentifiedStream 
+                        [v >= 1 and v <= 11]+, e =  
+                        playerIdentifiedStream 
+                        [v < 1 or v >= 11] select "ON" as getAvgsForState, t[0].ts as ts_start, t[last].ts as ts_stop, s.pid as player_id, "trot" as intensity, t[last].v as speed, debs:calculateDistance(t[0].x,t[0].y,t[0].z,t[last].x,t[last].y,t[last].z) as distance, (t[last].ts - t[0].ts)/1000000000.0 as unitPeriod insert into runDataStream partition by player;
+ 
+                from s = 
+                        playerIdentifiedStream 
+                        [v < 11 or v >= 14], t =  
+                        playerIdentifiedStream 
+                        [v >= 11 and v < 14]+, e =  
+                        playerIdentifiedStream 
+                        [v < 11 or v >= 14] select "ON" as getAvgsForState, t[0].ts as ts_start, t[last].ts as ts_stop, s.pid as player_id, "low" as intensity, t[last].v as speed, debs:calculateDistance(t[0].x,t[0].y,t[0].z,t[last].x,t[last].y,t[last].z) as distance, (t[last].ts - t[0].ts)/1000000000.0 as unitPeriod insert into runDataStream partition by player;
+
+                from s = 
+                        playerIdentifiedStream 
+                        [v < 14 or v >= 17], t =  
+                        playerIdentifiedStream 
+                        [v >= 14 and v < 17]+, e =  
+                        playerIdentifiedStream 
+                        [v < 14 or v >= 17] select "ON" as getAvgsForState, t[0].ts as ts_start, t[last].ts as ts_stop, s.pid as player_id, "medium" as intensity, t[last].v as speed, debs:calculateDistance(t[0].x,t[0].y,t[0].z,t[last].x,t[last].y,t[last].z) as distance, (t[last].ts - t[0].ts)/1000000000.0 as unitPeriod insert into runDataStream partition by player;
+
+                from s = 
+                        playerIdentifiedStream 
+                        [v < 17 or v >= 24], t =  
+                        playerIdentifiedStream 
+                        [v >= 17 and v < 24]+, e =  
+                        playerIdentifiedStream 
+                        [v < 17 or v >= 24] select "ON" as getAvgsForState, t[0].ts as ts_start, t[last].ts as ts_stop, s.pid as player_id, "high" as intensity, t[last].v as speed, debs:calculateDistance(t[0].x,t[0].y,t[0].z,t[last].x,t[last].y,t[last].z) as distance, (t[last].ts - t[0].ts)/1000000000.0 as unitPeriod insert into runDataStream partition by player;
+
+                from s = 
+                        playerIdentifiedStream 
+                        [v < 24], t =  
+                        playerIdentifiedStream 
+                        [v >= 24]+, e =  
+                        playerIdentifiedStream 
+                        [v < 24] select "ON" as getAvgsForState, t[0].ts as ts_start, t[last].ts as ts_stop, s.pid as player_id, "sprint" as intensity, t[last].v as speed, debs:calculateDistance(t[0].x,t[0].y,t[0].z,t[last].x,t[last].y,t[last].z) as distance, (t[last].ts - t[0].ts)/1000000000.0 as unitPeriod insert into runDataStream partition by player;
+
+
+define partition playerForFiltering by runDataStream.player_id;
+
+from runDataStream#window.debs:filterShortRuns(1000.0,'unitPeriod') 
+		select * 
+		output last every 20 milliseconds 
+		insert into filteredRunDataStream 	
+		partition by playerForFiltering;
+		
+from filteredRunDataStream
+	select concat(player_id,",",intensity,",", speed) as chart_tuple
+	insert into chartStream;  		
+
+from filteredRunDataStream [intensity=='stop'] 
+	select ts_stop as ts, player_id as player_id, unitPeriod as standing_time, distance as standing_distance,
+		0D as trot_time,0D as trot_distance,0D as low_time,0D as low_distance,0D as medium_time,0D as medium_distance,
+		0D as high_time,0D as high_distance,0D as sprint_time,0D as sprint_distance 
+	insert into standingStream;
+
+from filteredRunDataStream [intensity=='trot']
+	select ts_stop as ts, player_id as player_id, 0D as standing_time, 0D as standing_distance,
+		unitPeriod as trot_time, distance as trot_distance,
+		0D as low_time,0D as low_distance,0D as medium_time,0D as medium_distance,
+		0D as high_time,0D as high_distance,0D as sprint_time,0D as sprint_distance 
+	insert into trotStream;
+
+from filteredRunDataStream [intensity=='low'] 
+	select ts_stop as ts, player_id as player_id, 0D as standing_time, 0D as standing_distance, 0D as trot_time,0D as trot_distance,
+		unitPeriod as low_time, distance as low_distance,
+		0D as medium_time,0D as medium_distance,
+		0D as high_time,0D as high_distance,0D as sprint_time,0D as sprint_distance 
+	insert into lowStream;
+
+
+from filteredRunDataStream [intensity=='medium'] 
+	select ts_stop as ts, player_id as player_id, 0D as standing_time, 0D as standing_distance, 0D as trot_time,0D as trot_distance, 0D as low_time, 0D as low_distance,
+		unitPeriod as medium_time, distance as medium_distance,
+		0D as high_time,0D as high_distance,0D as sprint_time,0D as sprint_distance 
+	insert into mediumStream;
+
+from filteredRunDataStream [intensity=='high'] 
+	select ts_stop as ts, player_id as player_id, 0D as standing_time, 0D as standing_distance, 0D as trot_time,0D as trot_distance, 0D as low_time, 0D as low_distance, 
+		0D as medium_time, 0D as medium_distance,
+		unitPeriod as high_time, distance as high_distance,
+		0D as sprint_time,0D as sprint_distance 
+	insert into highStream;
+
+from filteredRunDataStream [intensity=='sprint'] 
+	select ts_stop as ts, player_id as player_id, 0D as standing_time, 0D as standing_distance, 0D as trot_time,0D as trot_distance, 0D as low_time, 0D as low_distance, 
+		0D as medium_time, 0D as medium_distance, 0D as high_time, 0D as high_distance,
+		unitPeriod as sprint_time, distance as sprint_distance 
+	insert into sprintStream partition by player;
+
+from standingStream#window.unique(player_id) as f join trotStream#window.unique(player_id) as s 
+                        on f.player_id == s.player_id 
+                        select debs:maxOf(f.ts,s.ts) as ts, s.player_id as player_id, f.standing_time as standing_time, f.standing_distance as standing_distance,
+                        s.trot_time as trot_time, s.trot_distance as trot_distance, s.low_time as low_time, s.low_distance as low_distance,
+                        s.medium_time as medium_time, s.medium_distance as medium_distance, s.high_time as high_time, s.high_distance as high_distance,
+                        s.sprint_time as sprint_time, s.sprint_distance as sprint_distance 
+                        insert into firstJoinStream;
+
+from firstJoinStream#window.unique(player_id) as f join lowStream#window.unique(player_id) as s 
+                        on f.player_id == s.player_id 
+                        select debs:maxOf(f.ts,s.ts) as ts, s.player_id as player_id, f.standing_time as standing_time, f.standing_distance as standing_distance,
+                        f.trot_time as trot_time, f.trot_distance as trot_distance, s.low_time as low_time, s.low_distance as low_distance,
+                        s.medium_time as medium_time, s.medium_distance as medium_distance, s.high_time as high_time, s.high_distance as high_distance,
+                        s.sprint_time as sprint_time, s.sprint_distance as sprint_distance 
+                        insert into secondJoinStream;
+
+
+from secondJoinStream#window.unique(player_id) as f join mediumStream#window.unique(player_id) as s 
+                        on f.player_id == s.player_id 
+                        select debs:maxOf(f.ts,s.ts) as ts, s.player_id as player_id, f.standing_time as standing_time, f.standing_distance as standing_distance,
+                        f.trot_time as trot_time, f.trot_distance as trot_distance, f.low_time as low_time, f.low_distance as low_distance,
+                        s.medium_time as medium_time, s.medium_distance as medium_distance, s.high_time as high_time, s.high_distance as high_distance,
+                        s.sprint_time as sprint_time, s.sprint_distance as sprint_distance 
+                        insert into thirdJoinStream;
+
+
+from thirdJoinStream#window.unique(player_id) as f join highStream#window.unique(player_id) as s 
+                        on f.player_id == s.player_id 
+                        select debs:maxOf(f.ts,s.ts) as ts, s.player_id as player_id, f.standing_time as standing_time, f.standing_distance as standing_distance,
+                        f.trot_time as trot_time, f.trot_distance as trot_distance, f.low_time as low_time, f.low_distance as low_distance,
+                        f.medium_time as medium_time, f.medium_distance as medium_distance, s.high_time as high_time, s.high_distance as high_distance,
+                        s.sprint_time as sprint_time, s.sprint_distance as sprint_distance 
+                        insert into fourthJoinStream;
+
+
+from fourthJoinStream#window.unique(player_id) as f join sprintStream#window.unique(player_id) as s 
+                on f.player_id == s.player_id 
+                select debs:maxOf(f.ts,s.ts) as ts, s.player_id as player_id, f.standing_time as standing_time, f.standing_distance as standing_distance,
+                f.trot_time as trot_time, f.trot_distance as trot_distance, f.low_time as low_time, f.low_distance as low_distance,
+                f.medium_time as medium_time, f.medium_distance as medium_distance, f.high_time as high_time, f.high_distance as high_distance,
+                s.sprint_time as sprint_time, s.sprint_distance as sprint_distance 
+                insert into aggregateRunStream;
+
+from aggregateRunStream#window.time(1 min) 
+                select max(ts) as ts,player_id,sum(standing_time) as standing_time,sum(standing_distance) as standing_distance,
+                sum(trot_time) as trot_time,sum(trot_distance) as trot_distance,sum(low_time) as low_time,sum(low_distance) as low_distance,
+                sum(medium_time) as medium_time,sum(medium_distance) as medium_distance,sum(high_time) as high_time,sum(high_distance) as high_distance,
+                sum(sprint_time) as sprint_time,sum(sprint_distance) as sprint_distance 
+                group by player_id output last every 20 milliseconds 
+                insert into aggrOneMinStream;
+
+from aggregateRunStream#window.time(5 min) 
+                select max(ts) as ts,player_id,sum(standing_time) as standing_time,sum(standing_distance) as standing_distance,
+                sum(trot_time) as trot_time,sum(trot_distance) as trot_distance,sum(low_time) as low_time,sum(low_distance) as low_distance,
+                sum(medium_time) as medium_time,sum(medium_distance) as medium_distance,sum(high_time) as high_time,sum(high_distance) as high_distance,
+                sum(sprint_time) as sprint_time,sum(sprint_distance) as sprint_distance 
+                group by player_id output last every 20 milliseconds 
+                insert into aggrFiveMinStream;
+
+from aggregateRunStream#window.time(20 min) 
+                select max(ts) as ts,player_id,sum(standing_time) as standing_time,sum(standing_distance) as standing_distance,
+                sum(trot_time) as trot_time,sum(trot_distance) as trot_distance,sum(low_time) as low_time,sum(low_distance) as low_distance,
+                sum(medium_time) as medium_time,sum(medium_distance) as medium_distance,sum(high_time) as high_time,sum(high_distance) as high_distance,
+                sum(sprint_time) as sprint_time,sum(sprint_distance) as sprint_distance 
+                group by player_id output last every 20 milliseconds 
+                insert into aggrTwentyMinStream;
+
+from aggregateRunStream#window.time(2 hours) 
+                select max(ts) as ts,player_id,sum(standing_time) as standing_time,sum(standing_distance) as standing_distance,
+                sum(trot_time) as trot_time,sum(trot_distance) as trot_distance,sum(low_time) as low_time,sum(low_distance) as low_distance,
+                sum(medium_time) as medium_time,sum(medium_distance) as medium_distance,sum(high_time) as high_time,sum(high_distance) as high_distance,
+                sum(sprint_time) as sprint_time,sum(sprint_distance) as sprint_distance 
+                group by player_id output last every 20 milliseconds 
+                insert into aggrAllStream;]]></queryExpressions>
+  <exportedStreams>
+    <stream name="chartStream" valueOf="chartStream" version="1.0.0"/>
+  </exportedStreams>
+</executionPlan>

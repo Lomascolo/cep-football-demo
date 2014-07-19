@@ -1,0 +1,86 @@
+<%
+
+function getRandomData() {
+	
+	var log = new Log(); 
+	
+	// calling the web service
+	var ws = require("ws");
+	var cep = new ws.WSRequest();
+	var options = new Array();
+	options.useSOAP = 1.2;
+	options.action = "urn:getShotsOnGoalPercentageNew";
+	var payload =null;   
+	var result;
+	var data = [];
+	var obj = {};
+
+	try {
+		cep.open(options,"http://localhost:9763/services/UC2Service", false);
+		cep.send(payload);
+		result = cep;
+	} catch (e) {
+		log.error("something went wrong with the ws");
+		return e.toString();
+	}
+
+	var getTeamsPossessionResponse = new XML(result.responseText);
+	//log.info(getTeamsPossessionResponse);
+	var ns = "http://service.axis2.wso2.com";
+	
+	var sog_player0 = getTeamsPossessionResponse.*::["return"][0].text();
+	
+	if (sog_player0 == '-1'){
+		obj["random1"] = {"label":"no-data","data":0};
+	}
+	else{
+		var sog_player0 = getTeamsPossessionResponse.*::["return"][0].text();
+		var sog_player1 = getTeamsPossessionResponse.*::["return"][1].text();
+		var sog_player2 = getTeamsPossessionResponse.*::["return"][2].text();
+		var sog_player3 = getTeamsPossessionResponse.*::["return"][3].text();
+		var sog_player4 = getTeamsPossessionResponse.*::["return"][4].text();
+		var sog_player5 = getTeamsPossessionResponse.*::["return"][5].text();
+		var sog_player6 = getTeamsPossessionResponse.*::["return"][6].text();
+		var sog_player7 = getTeamsPossessionResponse.*::["return"][7].text();
+		
+		obj["random0"] = {"label":"","data":sog_player0, color: "#5F4C0B"};
+		obj["random1"] = {"label":"","data":sog_player1, color: "#5E610B"};
+		obj["random2"] = {"label":"","data":sog_player2, color: "#B18904"};
+		obj["random3"] = {"label":"","data":sog_player3, color: "#AEB404"};
+		obj["random4"] = {"label":"","data":sog_player4, color: "#FFBF00"};
+		obj["random5"] = {"label":"","data":sog_player5, color: "#FFFF00"};
+		obj["random6"] = {"label":"","data":sog_player6, color: "#F7D358"};
+		obj["random7"] = {"label":"","data":sog_player7, color: "#F4FA58"};			
+	}
+	
+/*	var time_A = getTeamsPossessionResponse.*::["return"][0].*::array[1].text();
+	var time_percent_A = getTeamsPossessionResponse.*::["return"][0].*::array[2].text();
+	
+	var ts_B = getTeamsPossessionResponse.*::["return"][1].*::array[0].text();
+	var time_B = getTeamsPossessionResponse.*::["return"][1].*::array[1].text();
+	var time_percent_B = 100 - time_percent_A;
+	
+
+
+	if(time_percent_A == '0.0' | time_percent_A == '100'){
+		obj["random1"] = {"label":"","data":0};
+	}
+	else{
+		obj["random1"] = {"label":"Team A","data":time_percent_A, color: "orange"};
+		obj["random2"] = {"label":"Team B","data":time_percent_B, color: "#E10000"};
+	}
+	
+	//temp block; delete later
+	var data = [];
+	var obj = {};
+	obj["random1"] = {"label":"Team A","data":10, color: "orange"};
+	obj["random2"] = {"label":"Team B","data":90, color: "#E10000"};
+	//end of temp block
+*/	
+	data.push(obj);
+    return data;
+
+}
+print(getRandomData());
+
+%>

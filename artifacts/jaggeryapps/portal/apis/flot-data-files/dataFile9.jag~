@@ -1,0 +1,53 @@
+<%
+
+function getRandomData() {
+
+	var playersMap = [[0, "Nick Gertje","A"],[1, "Dennis Dotterweich","A"],[2, "Niklas Waelzlein","A"],[3, "Wili Sommer","A"],
+	                  [4, "Philipp Harlass","A"],[5, "Roman Hartleb","A"],[6, "Erik Engelhardt","A"],[7, "Sandro Schneider","A"],
+	                  [8, "Leon Krapf","B"],[9, "Kevin Baer","B"],[10, "Luca Ziegler","B"],[11, "Ben Mueller","B"],
+	                  [12, "Vale Reitstetter","B"],[13, "Christopher Lee","B"],[14, "Leon Heinze","B"],[15, "Leo Langhans","B"],
+	                  [16, "",""]
+					]
+	
+	var log = new Log();
+	
+	// calling the web service
+	var ws = require("ws");
+	var cep = new ws.WSRequest();
+	var options = new Array();
+	options.useSOAP = 1.2;
+	options.action = "urn:getPlayerPossession";
+	var payload =null;   
+	var result;
+
+	try {
+		cep.open(options,"http://localhost:9763/services/UC2Service", false);
+		cep.send(payload);
+		result = cep;
+	} catch (e) {
+		log.error("couldnt connect to ws");
+		return e.toString();
+	}
+
+	var getPlayersPossessionResponse = new XML(result.responseText);
+	var ns = "http://service.axis2.wso2.com";
+
+	var output = [];
+	var player_id; var player_name; var team_name; var time; var hitcount;
+	
+	for (var i = 0; i <= 4; i++) {
+			player_id = getPlayersPossessionResponse.*::["return"][i].text(); 
+			player_name = playersMap[player_id][1];
+			team_name = playersMap[player_id][2];
+		//	log.info(player_name+" "+time+" "+hitcount);
+			output.push([player_id,player_name, team_name]);
+	}
+	//log.info("-----------------------------------------");
+	
+	return output;
+
+
+}
+print(getRandomData());
+
+%>

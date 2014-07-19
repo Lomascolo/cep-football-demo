@@ -1,0 +1,14 @@
+<service>
+   <description>
+      This Web Service is hosted to serve Usecase-1
+   </description>
+   <parameter name="ServiceClass">com.wso2.axis2.service.UC1Service</parameter>
+   <operation name="notifyPlayerState">
+      <messageReceiver
+      class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+   </operation>
+      <operation name="getPlayerState">
+      <messageReceiver
+      class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+   </operation>
+</service>

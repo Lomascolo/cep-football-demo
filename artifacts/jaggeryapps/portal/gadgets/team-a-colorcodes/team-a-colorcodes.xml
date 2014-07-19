@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    <ModulePrefs title="Bar Chart"
+                 author="WSO2 Gadget Server"
+                 height="230"
+                 scrolling="true"
+                 tags="charts,bar,visualization,data"
+                 description="A generic Bar Chart gadget, that takes a json datasource as an input. It can be configured to fetch data in defined intervals. This gadget can be used to create dashboards with statistical data. This gadget can be reused as an iframe in any web page as it is self contained.">
+     </ModulePrefs>
+    <UserPref name="dataSource"
+              display_name="Data Source"
+              default_value="../../portal/apis/flot-data-files/dataFile7.jag">
+    </UserPref>
+    <UserPref name="updateGraph"
+              display_name="Update Interval (s)"
+              default_value="No">
+    </UserPref>
+<Content type="html">
+<![CDATA[
+<html>
+ <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Bar Chart</title>
+	<link href="css/flot-graph.css" rel="stylesheet" type="text/css"> 
+	<link href="css/weigted-list.css" rel="stylesheet" type="text/css">  
+	<link href="css/table-style.css" rel="stylesheet" type="text/css">
+	<link href="../../themes/portal/css/bootstrap.min.css" rel="stylesheet" type="text/css"> 
+	<script language="javascript" type="text/javascript" src="../../js/flot/excanvas.min.js"></script> 
+	<script language="javascript" type="text/javascript" src="../../js/flot/jquery.js"></script> 
+	<script language="javascript" type="text/javascript" src="../../js/flot/jquery.flot.js"></script>  
+	<script language="javascript" type="text/javascript" src="../../js/flot/jquery.flot.selection.js"></script> 
+	<script language="javascript" type="text/javascript" src="../../js/flot/jquery.flot.resize.js"></script>  
+	<script language="javascript" type="text/javascript" src="js/options-bar.js"></script>  
+	<!-- <script language="javascript" type="text/javascript" src="js/flot-chart-core.js"></script>  -->
+</head>
+
+<body>
+
+	<div>
+		<table id="hor-minimalist-colorcodes">  
+		   <tbody>
+		      <tr>
+			 <td>
+			    <div style="border:1px solid #ccc;padding:1px;width:13px;;width:13px;">
+			       <div style="width:4px;height:0;border:5px solid #5F4C0B;overflow:hidden" />
+			    </div>
+			 </td>
+			 <td>1</td>
+			 <td>Nick Gertje</td>
+		      </tr>
+		      <tr>
+			 <td>
+			    <div style="border:1px solid #ccc;padding:1px;width:13px;">
+			       <div style="width:4px;height:0;border:5px solid #5E610B;overflow:hidden" />
+			    </div>
+			 </td>
+			 <td>2</td>
+			 <td>Dennis Dotterweich</td>
+		      </tr>
+		      <tr>
+			 <td>
+			    <div style="border:1px solid #ccc;padding:1px;width:13px;">
+			       <div style="width:4px;height:0;border:5px solid #B18904;overflow:hidden" />
+			    </div>
+			 </td>
+			 <td>3</td>
+			 <td>Niklas Waelzlein</td>
+		      </tr>
+		      <tr>
+			 <td>
+			    <div style="border:1px solid #ccc;padding:1px;width:13px;">
+			       <div style="width:4px;height:0;border:5px solid #AEB404;overflow:hidden" />
+			    </div>
+			 </td>
+			 <td>4</td>
+			 <td>Wili Sommer</td>
+		      </tr>
+		      <tr>
+			 <td>
+			    <div style="border:1px solid #ccc;padding:1px;width:13px;">
+			       <div style="width:4px;height:0;border:5px solid #FFBF00;overflow:hidden" />
+			    </div>
+			 </td>
+			 <td>5</td>
+			 <td>Philipp Harlass</td>
+		      </tr>
+		      <tr>
+			 <td>
+			    <div style="border:1px solid #ccc;padding:1px;width:13px;">
+			       <div style="width:4px;height:0;border:5px solid #FFFF00;overflow:hidden" />
+			    </div>
+			 </td>
+			 <td>6</td>
+			 <td>Roman Hartleb</td>
+		      </tr>
+		      <tr>
+			 <td>
+			    <div style="border:1px solid #ccc;padding:1px;width:13px;">
+			       <div style="width:4px;height:0;border:5px solid #F7D358;overflow:hidden" />
+			    </div>
+			 </td>
+			 <td>7</td>
+			 <td>Erik Engelhardt</td>
+		      </tr>
+		      <tr>
+			 <td>
+			    <div style="border:1px solid #ccc;padding:1px;width:13px;">
+			       <div style="width:4px;height:0;border:5px solid #F4FA58;overflow:hidden" />
+			    </div>
+			 </td>
+			 <td>8</td>
+			 <td>Sandro Schneider</td>
+		      </tr>
+		   </tbody>
+		</table>
+	</div>
+
+</body>
+</html>
+]]>
+</Content>
+</Module>

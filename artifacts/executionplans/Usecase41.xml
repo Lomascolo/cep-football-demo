@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executionPlan name="Usecase41" statistics="disable" trace="disable" xmlns="http://wso2.org/carbon/eventprocessor">
+  <description>This execution plan was created for Obtaining Shot On Goal events.</description>
+  <siddhiConfiguration>
+    <property name="siddhi.enable.distributed.processing">false</property>
+    <property name="siddhi.persistence.snapshot.time.interval.minutes">0</property>
+  </siddhiConfiguration>
+  <importedStreams>
+    <stream as="sensorStream" name="sensorStream" version="1.0.0"/>
+  </importedStreams>
+  <queryExpressions><![CDATA[//--IN addBallStream
+
+from  sensorStream [ sid == '4' or sid == '8' or sid == '10' or sid =='12'] 
+	select sid, ts, x, y, z, a, v, ax, ay, az, vx, vy, vz, tsr, 'ball' as id  
+	insert into ballStream;
+
+from  ballStream [ x < 52483 and x > 0 and y > -33960 and y < 33965] 
+	insert into ballInStream;
+
+//--IN addPlayerStreams
+
+from  sensorStream [ sid == '13' or sid == '14' or sid == '97' or sid == '98'] 
+                    select 'Nick Gertje' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms  
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '47' or sid == '16'] 
+                    select 'Dennis Dotterweich' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '49' or sid == '88'] 
+                    select 'Niklas Waelzlein' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '19' or sid == '52'] 
+                    select 'Wili Sommer' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '53' or sid == '54'] 
+                    select 'Philipp Harlass' as pid , 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '23' or sid == '24'] 
+                    select 'Roman Hartleb' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '57' or sid == '58'] 
+                    select 'Erik Engelhardt' as pid, 'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '59' or sid == '28'] 
+                    select 'Sandro Schneider' as pid ,'A' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '61' or sid == '62' or sid == '99' or sid == '100'] 
+                    select 'Leon Krapf' as pid,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '63' or sid == '64'] 
+                    select 'Kevin Baer' as pid,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '65' or sid == '66'] 
+                    select 'Luca Ziegler' as pid,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '67' or sid == '68'] 
+                    select 'Ben Mueller' as pid ,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '69' or sid == '38'] 
+                    select 'Vale Reitstetter' as pid,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '71' or sid == '40'] 
+                    select 'Christopher Lee' as pid ,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '73' or sid == '74'] 
+                    select 'Leon Heinze' as pid ,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+
+from  sensorStream [ sid == '75' or sid == '44'] 
+                    select 'Leo Langhans' as pid ,'B' as tid, ts, x, y, z, v, a, vx, vy, vz, ax, ay, az, sid, tsms 
+                    insert into sensorIdentifiedStream;
+					
+//--IN addHitStream - NOTE: Im adding "hitStream" even though it was nowhere added in the Usecase41.java file. Should ask from Lasantha about this. 
+
+from  ballInStream#window.length(1) as b join sensorIdentifiedStream#window.length(1)  as p unidirectional 
+	on debs:getDistance(b.x,b.y,b.z, p.x, p.y, p.z) < 1000 and b.a > 55 
+	select p.sid, p.ts, p.x, p.y, p.z, p.v, p.vx ,p.vy, p.vz, p.a, p.ax, p.ay, p.az, p.pid,p.tid, b.sid as ball_sid  
+	insert into hitStream;					
+
+//--IN addBallLeavingStream
+
+from b1 = ballStream[ x < 52483 and x > 0 and y > -33960 and y < 33965], b2 = ballStream[ b1.sid==sid and (x > 52483 or x < 0 or y < -33960 or y > 33965)] 
+	select b2.sid, b2.ts, b2.x, b2.y, b2.z, b2.a, b2.id  
+	insert into ballLeavingStream;
+	
+//--adding q43
+
+from s = hitStream, 
+		e = ballInStream[debs1:isGoingToGoal(s.tid,x,y,z,a,v,vx,vy,vz,ax,ay,az,s.ts,ts) == 1.0]+, 
+		h = ballInStream[debs1:isGoingToGoal(s.tid,x,y,z,a,v,vx,vy,vz,ax,ay,az,s.ts,ts) == 0.0] or l=ballLeavingStream 
+	select s.ts as startTime, e[0].ts, s.pid, s.tid, 'on' as mode 
+	insert into shotOnGoalStream;	
+	
+//--event stream for the chart - game-visualization-service - shotOnGoal visualization 
+	
+from shotOnGoalStream
+	select concat(ts,",",pid) as chart_tuple_shot_on_goal
+	insert into chartShotOnGoalStream;	
+	
+from shotOnGoalStream
+	select 1 as startTime, pid, tid, count(pid) as cnt
+	group by pid
+	insert into shotOnGoalCountStream;	
+	
+//--event stream for the chart
+
+from shotOnGoalCountStream
+	select concat(pid,",",startTime,",",cnt) as chart_tuple
+	insert into chartShotOnGoalCountStream;	]]></queryExpressions>
+  <exportedStreams>
+    <stream name="chartShotOnGoalCountStream"
+      valueOf="chartShotOnGoalCountStream" version="1.0.0"/>
+    <stream name="chartShotOnGoalStream" valueOf="chartShotOnGoalStream" version="1.0.0"/>
+  </exportedStreams>
+</executionPlan>

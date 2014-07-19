@@ -1,0 +1,87 @@
+<% 
+	var totalPoints = 10;
+	var data1 = [];
+	var data2 = [];
+	
+	function invokeStockDataWs() { 
+		var log = new Log(); 
+		var ws = require("ws");
+
+		var cep = new ws.WSRequest();
+		var options = new Array();
+		options.useSOAP = 1.2;
+		options.action = "urn:getStockQuote";
+		var payload =null;   //null
+		var result;
+
+		var dataCount = 0;
+//		while (data1.length < totalPoints) {
+//			try {
+//				cep.open(options,"http://localhost:9763/services/TestService", false);
+//				cep.send(payload);
+//				result = cep;
+//			} catch (e) {
+//				log.error(e.toString());
+//				return e.toString();
+//			}
+//			var order = result.responseText;
+//			var order = order.replace("ns:","");
+//			var order = order.replace("ns:","");
+//			var order = order.replace("ns:","");
+//			var order = order.replace("ns:","");
+//			var order = order.replace("ns:","");
+//			var order = order.replace("return","temp");
+//			var order = order.replace("return","temp");
+//			var order = order.replace(" xmlns=\"http://service.axis2.wso2.com\"","");
+//			var order = new XML(order);
+			//var order = new XML(result.responseE4X);
+			//var ns="http://service.axis2.wso2.com";
+			//log.info("start"+order+"end");
+			//data1.push(dataCount++,order.temp.text(),order.temp.text());
+			//data2.push([dataCount++,order.temp.text()]);
+			//log.info(order.temp.text());  
+//		}
+	
+		while (data2.length < totalPoints) {
+			for (var i = 0; i <= 100; ++i) {
+				//var x1 = Math.random();
+				//var x2 = Math.random();
+				//var x = x1 + i * (Math.abs(x2 - x1)) / 100;
+				//data2.push([i, order.temp.text()]);
+
+			//pasting starts
+			try {
+				cep.open(options,"http://localhost:9763/services/TestService", false);
+				cep.send(payload);
+				result = cep;
+			} catch (e) {
+				log.error(e.toString());
+				return e.toString();
+			}
+			var order = result.responseText;
+			var order = order.replace("ns:","");
+			var order = order.replace("ns:","");
+			var order = order.replace("ns:","");
+			var order = order.replace("ns:","");
+			var order = order.replace("ns:","");
+			var order = order.replace("return","temp");
+			var order = order.replace("return","temp");
+			var order = order.replace(" xmlns=\"http://service.axis2.wso2.com\"","");
+			var order = new XML(order);
+			//var order = new XML(result.responseE4X);
+			//var ns="http://service.axis2.wso2.com";
+			//log.info("start"+order+"end");
+			//data1.push(dataCount++,order.temp.text(),order.temp.text());
+			data2.push([i,order.temp.text()]);
+			log.info(order.temp.text()); 
+			//pasting ends
+			}
+		}
+		
+		return [
+			{"series1":{label: "Basic Stock Quotes", data: data2} , "series2":{label: "All Stock Quotes", data: data2 }}
+		];		
+	}
+	
+	print(invokeStockDataWs()); 
+%>

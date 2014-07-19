@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    <ModulePrefs title=""
+                 author="WSO2 Gadget Server"
+                 height="230"
+                 scrolling="true"
+                 tags="charts,bar,visualization,data"
+                 description="A generic Bar Chart gadget, that takes a json datasource as an input. It can be configured to fetch data in defined intervals. This gadget can be used to create dashboards with statistical data. This gadget can be reused as an iframe in any web page as it is self contained.">
+     </ModulePrefs>
+    <UserPref name="dataSource"
+              display_name="Data Source"
+              default_value="../../portal/apis/flot-data-files/dataFile7.jag">
+    </UserPref>
+    <UserPref name="updateGraph"
+              display_name="Update Interval (s)"
+              default_value="No">
+    </UserPref>
+<Content type="html"> 
+<![CDATA[
+<html>
+ <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Bar Chart</title>
+	<link href="../../themes/portal/css/flot-graph.css" rel="stylesheet" type="text/css">  
+	<link href="../../themes/portal/css/bootstrap.min.css" rel="stylesheet" type="text/css"> 
+	<script language="javascript" type="text/javascript" src="../../js/flot/excanvas.min.js"></script> 
+	<script language="javascript" type="text/javascript" src="../../js/flot/jquery.js"></script> 
+	<script language="javascript" type="text/javascript" src="../../js/flot/jquery.flot.js"></script>  
+	<script language="javascript" type="text/javascript" src="../../js/flot/jquery.flot.selection.js"></script> 
+	<script language="javascript" type="text/javascript" src="../../js/flot/jquery.flot.resize.js"></script>  
+	<script language="javascript" type="text/javascript" src="js/options-bar.js"></script>  
+	<script language="javascript" type="text/javascript" src="js/flot-chart-core.js"></script>  
+</head>
+
+<body style="background-color:#84B235;">
+	<img id="pitch" src="http://localhost:9763/portal/gadgets/game-visualization/pitch.png" alt="Soccer Pitch" width="683" height="528" style="display: none;"/>
+	<img id="ball" src="http://localhost:9763/portal/gadgets/game-visualization/ball-xx-small.png" alt="Soccer Ball" width="24" height="24" style="display: none;"/>
+	<img id="shot_on_goal_banner" src="http://localhost:9763/portal/gadgets/game-visualization/shot-on-goal.png" alt="Shot on Goal Banner" width="150" height="30" style="display: none;"/>
+	<img id="offside_banner" src="http://localhost:9763/portal/gadgets/game-visualization/offside.png" alt="Offside Banner" width="150" height="30" style="display: none;"/>
+	<img id="a1" src="http://localhost:9763/portal/gadgets/game-visualization/a1.png" alt="a1" width="12" height="12" style="display: none;"/>
+	<img id="a2" src="http://localhost:9763/portal/gadgets/game-visualization/a2.png" alt="a2" width="12" height="12" style="display: none;"/>
+	<img id="a3" src="http://localhost:9763/portal/gadgets/game-visualization/a3.png" alt="a3" width="12" height="12" style="display: none;"/>
+	<img id="a4" src="http://localhost:9763/portal/gadgets/game-visualization/a4.png" alt="a4" width="12" height="12" style="display: none;"/>
+	<img id="a5" src="http://localhost:9763/portal/gadgets/game-visualization/a5.png" alt="a5" width="12" height="12" style="display: none;"/>
+	<img id="a6" src="http://localhost:9763/portal/gadgets/game-visualization/a6.png" alt="a6" width="12" height="12" style="display: none;"/>
+	<img id="a7" src="http://localhost:9763/portal/gadgets/game-visualization/a7.png" alt="a7" width="12" height="12" style="display: none;"/>
+	<img id="a8" src="http://localhost:9763/portal/gadgets/game-visualization/a8.png" alt="a8" width="12" height="12" style="display: none;"/>
+	<img id="b1" src="http://localhost:9763/portal/gadgets/game-visualization/b1.png" alt="b1" width="12" height="12" style="display: none;"/>
+	<img id="b2" src="http://localhost:9763/portal/gadgets/game-visualization/b2.png" alt="b2" width="12" height="12" style="display: none;"/>
+	<img id="b3" src="http://localhost:9763/portal/gadgets/game-visualization/b3.png" alt="b3" width="12" height="12" style="display: none;"/>
+	<img id="b4" src="http://localhost:9763/portal/gadgets/game-visualization/b4.png" alt="b4" width="12" height="12" style="display: none;"/>
+	<img id="b5" src="http://localhost:9763/portal/gadgets/game-visualization/b5.png" alt="b5" width="12" height="12" style="display: none;"/>
+	<img id="b6" src="http://localhost:9763/portal/gadgets/game-visualization/b6.png" alt="b6" width="12" height="12" style="display: none;"/>
+	<img id="b7" src="http://localhost:9763/portal/gadgets/game-visualization/b7.png" alt="b7" width="12" height="12" style="display: none;"/>
+	<img id="b8" src="http://localhost:9763/portal/gadgets/game-visualization/b8.png" alt="b8" width="12" height="12" style="display: none;"/>
+
+	<canvas id="canvas" width="683" height="528"></canvas>
+	<script type="text/javascript">
+		var canvasSize = $('#canvas').width();
+		var documentSize = $(document).width();
+		if(canvasSize < documentSize){
+			var marginLeft = (documentSize - canvasSize)/2;
+			$('#canvas').css("margin-left",marginLeft+"px");
+		}
+		function start_and_play(obj){
+			$(obj).hide();
+			$(obj).next().show();
+			$.ajax({
+				url:"../foo/x.jag",
+				data:{key1:"val1",key2:"val2"},
+				success:function(data){
+					
+				}
+			});
+		}
+
+		function start_and_pause(obj){
+			$(obj).hide();
+			$(obj).prev().show();
+			$.ajax({
+				url:"../foo/x.jag",
+				data:{key1:"val1",key2:"val2"},
+				success:function(data){
+					
+				}
+			});
+		}
+	</script>
+	<style>
+	a{text-decoration:none;cursor:pointer;}
+	a:hover{
+	   	color:#fff;
+		text-decoration:none;
+	}
+	.playbutton{
+		background:#000;
+		color:#fff;
+		padding: 5px 10px;
+		font-size:15px;
+		border-radius:5px;
+		
+	}
+	.pausebutton{
+		background:#000;
+		color:#fff;
+		padding: 5px 10px;
+		font-size:15px;
+		border-radius:5px;
+	}
+	.button-container{
+		position:absolute;
+		z-index:200;
+		left:0;
+		top:0;
+		margin-top:10px;
+		margin-left:10px;
+	}
+	</style>
+	<div class="button-container">
+		<a class="playbutton" id="playbutton" onclick="start_and_play(this)"> > </a>
+		<a class="pausebutton" style="display:none" id="pausebutton" onclick="start_and_pause(this)"> = </a>
+	</div>
+	<div>
+		<!--	<div id="optionPanel">			-->
+			<!--	<div id="optionsLeft">						-->
+			<!--		<button class="pause btn btn-mini">Pause</button>	-->
+			<!--		<button class="reset btn btn-mini">reset</button>	-->
+			<!--	</div>								-->
+			<!--	<div id="optionsRight" class="seriesContainer"></div>		-->
+				
+		<!--	</div>     -->
+			<div id="placeholder" class="demo-placeholder" style="height:100%;margin-top:-41px;"></div>
+			<div id="overview" class="demo-placeholder"></div>
+
+	</div>
+
+</body>
+</html>
+]]>
+</Content>
+</Module>
