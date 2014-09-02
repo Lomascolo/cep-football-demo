@@ -1,29 +1,40 @@
+--------------------------------------------------------------------------------------------------
+				README
+--------------------------------------------------------------------------------------------------
+You may follow these guideline to *manually setup the demo.
+Alternatively, you may run the deply.sh file, so the shell script will do the deplyments for you.
+--------------------------------------------------------------------------------------------------
 
-FILENAME
-LOCATION (WHERE TO PUT)
+RESOURCE
+WHERE-TO-PUT
 
 debs_challenge_new_1.0.0_1.0.0.jar
-/home/dilini/software/wso2cep-3.1-new-dashboard/repository/components/dropins/
+<CEP_HOME>/repository/components/dropins/
 
 debs-challenge-new-1.0.0.jar
-/home/dilini/software/wso2cep-3.1-new-dashboard/repository/components/lib/
+<CEP_HOME>/repository/components/lib/
 
 patch0009
-/home/dilini/software/wso2cep-3.1-new-dashboard/repository/components/patches/
+<CEP_HOME>/repository/components/patches/
 
 siddhi.extension
-/home/dilini/software/wso2cep-3.1-new-dashboard/repository/conf/siddhi
+<CEP_HOME>/repository/conf/siddhi
 
-??????????????? do we have to ...?
-/home/dilini/software/wso2cep-3.1-new-dashboard/repository/conf/stream-manager-config.xml
+stream-manager-config.xml
+<CEP_HOME>/repository/conf
 
 [all the folders inside artifacts to:]
-/home/dilini/software/wso2cep-3.1-new-dashboard/repository/deployment/server
+<CEP_HOME>/repository/deployment/server
 
 [all the folders inside consumers to:]
-/home/dilini/software/wso2cep-3.1-new-dashboard/samples/consumers
+<CEP_HOME>/samples/consumers
 
 debs-input
-/home/dilini/software/wso2cep-3.1-new-dashboard/samples/producers/debs-input
+<CEP_HOME>/samples/producers/debs-input
 
+fix-to-CEP-870/modules/ws
+<CEP_HOME>/modules
+
+fix-to-CEP-870/dropins/org.jaggeryjs.hostobjects.ws_0.9.0.ALPHA4_wso2v1.jar
+<CEP_HOME>/repository/components/dropins
 
