@@ -38,4 +38,86 @@
          </payloadData>
      </streamDefinition> 
 
+    <streamDefinition name="ballGoalStream" version="1.0.0">
+         <payloadData>
+             <property name="ts" type="Long"/>
+         </payloadData>
+     </streamDefinition> 
+
+    <streamDefinition name="chartBallInStream" version="1.0.0">
+         <payloadData>
+             <property name="ball_position" type="String"/>
+         </payloadData>
+     </streamDefinition> 
+
+    <streamDefinition name="chartBallPossessionStream" version="1.0.0">
+         <payloadData>
+             <property name="player_id" type="String"/>
+         </payloadData>
+     </streamDefinition> 
+
+    <streamDefinition name="chartFailedPassesStream" version="1.0.0">
+         <payloadData>
+             <property name="chart_tuple" type="String"/>
+         </payloadData>
+     </streamDefinition>
+
+    <streamDefinition name="chartFullFinalTeamBallPossessionStream" version="1.0.0">
+         <payloadData>
+             <property name="chart_teamposs_tuple" type="String"/>
+         </payloadData>
+     </streamDefinition>
+
+    <streamDefinition name="chartOffsideOutputStream" version="1.0.0">
+         <payloadData>
+             <property name="chart_tuple" type="String"/>
+         </payloadData>
+     </streamDefinition>
+
+    <streamDefinition name="chartPlayerIdentifiedStream" version="1.0.0">
+         <payloadData>
+             <property name="player_position" type="String"/>
+         </payloadData>
+     </streamDefinition>
+
+    <streamDefinition name="chartShotOnGoalCountStream" version="1.0.0">
+         <payloadData>
+             <property name="chart_tuple" type="String"/>
+         </payloadData>
+     </streamDefinition>
+
+    <streamDefinition name="chartShotOnGoalStream" version="1.0.0">
+         <payloadData>
+             <property name="chart_tuple_shot_on_goal" type="String"/>
+         </payloadData>
+     </streamDefinition>
+
+    <streamDefinition name="chartStream" version="1.0.0">
+         <payloadData>
+             <property name="chart_tuple" type="String"/>
+         </payloadData>
+     </streamDefinition>
+
+    <streamDefinition name="chartSuccessPassesStream" version="1.0.0">
+         <payloadData>
+             <property name="chart_tuple" type="String"/>
+         </payloadData>
+     </streamDefinition>
+
+    <streamDefinition name="offsideOutputStream" version="1.0.0">
+         <payloadData>
+             <property name="event_type" type="int"/>
+             <property name="pid" type="String"/>
+             <property name="y" type="Double"/>
+             <property name="ts" type="Long"/>
+             <property name="passee" type="String"/>
+         </payloadData>
+     </streamDefinition>
+
+    <streamDefinition name="chartDelayedBallPossessionStream" version="1.0.0">
+         <payloadData>
+             <property name="chart_tuple" type="String"/>
+         </payloadData>
+     </streamDefinition>
+
 </streamManagerConfiguration>
