@@ -5,8 +5,6 @@ var chartData = [];
 $(function () {
 	//initCanvas();	
 
-    //$('#placeholder').html("Hello World");
-    //var plot = $.plot("#placeholder", chartData, options);
 	var pauseBtn = $("button.pause");
     pauseBtn.click(function () {
 	$(this).toggleClass('btn-warning');
@@ -16,7 +14,7 @@ $(function () {
 		fetchData();
 	});
 
-    fetchData();  //uncomment later!!!
+    fetchData();  
 
     if(pref.getString("pause").toLowerCase() == "yes")
     {
@@ -113,7 +111,7 @@ var drawChart = function(data,options){
 }
 
 function fetchData() {
-        var url = "../../portal/apis/flot-data-files/dataFile8.jag"; //pref.getString("dataSource");  
+        var url = "../../portal/apis/flot-data-files/dataFile8.jag";  
 	
         $.ajax({
             url: url,
@@ -126,10 +124,6 @@ function fetchData() {
 }
 function onDataReceived(series) {
 	var tableStr = "<table><tr><th>Player's Name&nbsp;&nbsp;&nbsp;&nbsp;</th><th>Team&nbsp;&nbsp;&nbsp;&nbsp;</th><th>Time Possessed&nbsp;&nbsp;&nbsp;&nbsp;</th><th>Hit Count</th></tr>";
-    /*	for (var i = 0; i <= 15; i++) {
-        	tableStr = tableStr + "<tr><td>"+series[i][0]+"&nbsp;&nbsp;&nbsp;&nbsp;</td><td align=\"right\">"+series[i][1]+"&nbsp;&nbsp;&nbsp;&nbsp;</td><td align=\"right\">"+series[i][2]+"&nbsp;&nbsp;&nbsp;&nbsp;</td><td align=\"right\">"+series[i][3]+"</td></tr>";
-    	}   */
-    //	tableStr = tableStr + "</table>";
 
 	var ctx = document.getElementById('canvas').getContext('2d');
 	ctx.clearRect(0, 0, 683, 528);
@@ -157,24 +151,16 @@ function onDataReceived(series) {
 
 
 	ctx.drawImage(pitchImg,0,0);
-	//ctx.fillStyle="#CCFFCC";
-	//ctx.fillRect(0,0,525, 340);
 
-	ctx.drawImage(a1, series[0][0], series[0][1]);		//light yello for goalie - Nick Gertje
-
-	ctx.drawImage(a2, series[1][0], series[1][1]);		//Dennis Dotterweich - pink    #FFFF00 - yello for the rest of the team
-
-	ctx.drawImage(a3, series[2][0], series[2][1]);		//Niklas Waelzlein - green 
-
-	ctx.drawImage(a4, series[3][0], series[3][1]);		//Wili Sommer - black
-	
-	ctx.drawImage(a5, series[4][0], series[4][1]);		// Philipp Harlass - bluish purple 
-	
-	ctx.drawImage(a6, series[5][0], series[5][1]);		//Roman Hartleb -  light blue
-	
-	ctx.drawImage(a7, series[6][0], series[6][1]);		//Erik Engelhardt - army green
-		
-	ctx.drawImage(a8, series[7][0], series[7][1]);		//Sandro Schneider - yellow
+//---------------------------Team A-----------------------------------------------
+	ctx.drawImage(a1, series[0][0], series[0][1]);		//Nick Gertje
+	ctx.drawImage(a2, series[1][0], series[1][1]);		//Dennis Dotterweich 
+	ctx.drawImage(a3, series[2][0], series[2][1]);		//Niklas Waelzlein  
+	ctx.drawImage(a4, series[3][0], series[3][1]);		//Wili Sommer 
+	ctx.drawImage(a5, series[4][0], series[4][1]);		// Philipp Harlass  
+	ctx.drawImage(a6, series[5][0], series[5][1]);		//Roman Hartleb 
+	ctx.drawImage(a7, series[6][0], series[6][1]);		//Erik Engelhardt 
+	ctx.drawImage(a8, series[7][0], series[7][1]);		//Sandro Schneider
 
 //---------------------------Team B-----------------------------------------------
 	ctx.drawImage(b1, series[8][0], series[8][1]);
@@ -191,24 +177,6 @@ function onDataReceived(series) {
 	var ball_x = parseInt(series[16][0]);
 	var ball_y = parseInt(series[16][1]);	
 
-	//ctx.drawImage(goalBannerImg, 40, 80);
-	if(ts > 11177235131637084 & ts < 11180791512378016 ){	//goal at 7.06 yellow
-		ball_x = parseInt(series[16][0])+15;	
-		//ball_y = parseInt(series[16][1])-100;
-		ctx.drawImage(goalBannerImg, 40, 80);
-	}
-	if(ts > 11550636734462112 & ts < 11555227290776920 ){	//goal at 13.2_ red
-		ball_x = parseInt(series[16][0])-20;	
-		//ball_y = parseInt(series[16][1])-100;
-		ctx.drawImage(goalBannerImg, 40, 80);
-	}
-	if(ts > 12080897585078434 & ts < 12087442428103816 ){	//goal at 22.20 red
-		ball_x = parseInt(series[16][0])-20;	
-		//ball_y = parseInt(series[16][1])-1000;
-		ctx.drawImage(goalBannerImg, 40, 80);
-	}
-
-
 	ctx.drawImage(ballImg, ball_x, ball_y);
 
 	var vx = parseInt(series[18][1])/10;
@@ -224,31 +192,26 @@ function onDataReceived(series) {
 	var ts_min_in_sec = ts_min*60;
 	var ts_sec = ts_sec_int - ts_min_in_sec;
 	var time_now = ts_min+":"+ ts_sec;
-	//var time_now = ts+", "+ts_sec_int+", "+ts_min+", "+ts_min_in_sec+", "+ts_sec;
 
 	ctx.fillStyle = "#3366CC";
   	ctx.font = "bold 16px Arial";
-  	//ctx.fillText(series[16][2], 100, 100);
 	ctx.fillText(time_now, 330, 50);
 
 
 	var ts = parseFloat(series[16][2]); 
 
-	//series[17][0] = 1;
+	//shotongoal!
 	if(series[17][0] == 1){
-		//alert("shotongoal!");
 		sessionStorage.setItem('sog_banner', 200);
 		ctx.drawImage(shot_on_goal_banner, 40, 60);
-		//alert("ok!");		
-		ctx.strokeStyle = "#FE2E2E";    //#F78181  #FE2E2E-pinky
+		ctx.strokeStyle = "#FE2E2E";   
 		ctx.setLineDash([2,5]);
-		ctx.lineWidth=5;		//1.5
+		ctx.lineWidth=5;		
 	}	
 	
 	var sog_banner = sessionStorage.getItem('sog_banner');
 	if(sog_banner>0){
 		ctx.drawImage(shot_on_goal_banner, 40, 60);
-		//alert(sog_banner);		
 		ctx.strokeStyle = "#FE2E2E";
 		ctx.setLineDash([2,5]);
 		ctx.lineWidth=5;
@@ -264,45 +227,17 @@ function onDataReceived(series) {
     	ctx.beginPath();
    	ctx.moveTo(ball_x , ball_y);
   	ctx.lineTo(ball_x+vx/15 , ball_y+vy/15);  
-	//alert("from:"+ball_x+","+ball_y+"to:"+vx+","+vy);
-	//alert("When added| "+(ball_x+vx)+","+(ball_y+vy));
 	
         ctx.closePath();
   	ctx.stroke();
 
 
-	//series[19][0] = 1;
 	var passer = parseInt(series[19][1]);
 	var passee = parseInt(series[19][2]);
 	var offside_banner = sessionStorage.getItem('offside_banner');
 	
-	//ts = 11556951947647030; series[19][0] = 1;   //offside
-//	if(ts > 11125701490000000 & ts < 11126731490000000){		//11125716487165896
-//		passer = 6;
-//		passee = 4; 
-//		series[19][0] = 1;
-//	}
-	
-	var offside702 = sessionStorage.getItem('offside702');
-	if(ts > 11176292010000000 & ts < 11176861290000000){		//7.02 offside 11175293512012326-window-detection   1500000000  11176861290000000 was 11175292010000000
-		passer = 6;
-		passee = 7; 
-		series[19][0] = 1;
-		sessionStorage.setItem('offside702', 200);		
-	}
-//	if(ts > 11185904470000000 & ts < 11185900470000000){		//11185929466974702  
-//		passer = 13;
-//		passee = 14; 
-//		series[19][0] = 1;
-//	}
-
-//	ctx.fillStyle = "#3366CC";		//delete later
- // 	ctx.font = "bold 16px Arial";
-  	//ctx.fillText(series[16][2], 100, 100);
-//	ctx.fillText(series[16][2], 330, 350);
-	
-	if((series[19][0] == 1) & !(ts > 11185929466974702 & ts < 11210990245380356) & !(ts > 11550636734462112 & ts < 11568338996699528 ) ){  //11185382059524124 This timestamp range is for filtering out the wrong offside after the goal.
-		//alert("offside!");
+	//offside
+	if(series[19][0] == 1){  
 		sessionStorage.setItem('offside_banner', 200);
 		ctx.drawImage(offsideBannerImg, 60, 90);
 
@@ -324,14 +259,6 @@ function onDataReceived(series) {
 	}
 
 	if(offside_banner>0){
-		offside702 = sessionStorage.getItem('offside702');
-		if(offside702 > 0){
-			offside702 = offside702 - 1;
-			sessionStorage.setItem('offside702', offside702);
-			passer = 6;
-			passee = 7; 
-		}		
-
 		ctx.drawImage(offsideBannerImg, 60, 90);
 		//alert(sog_banner);		
 		offside_banner = offside_banner - 1;
