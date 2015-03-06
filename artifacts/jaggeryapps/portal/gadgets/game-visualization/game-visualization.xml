@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-    <ModulePrefs title=""
+    <ModulePrefs title="game-visualization"
                  author="WSO2 Gadget Server"
                  height="230"
                  scrolling="true"
